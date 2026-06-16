@@ -18,6 +18,7 @@ A premium, responsive dashboard for tracking, searching, filtering, and sharing 
 * **Memory Caching**: Cache feed updates for 5 minutes in memory to prevent rate limits, with a graceful cache fallback if network connection fails.
 * **Copy to Clipboard Utility**: One-click formatted update summaries copied to user clipboards using the browser's `navigator.clipboard` API with dynamic visual button status feedback.
 * **Export to CSV**: Formulates and triggers downloads of the currently filtered release logs as a CSV file, fully formatted with sanitization.
+* **Dynamic Light/Dark Theme**: Dynamic switching of page styles via root CSS custom variables overrides. Preferences are saved to `localStorage` and loaded early in the `<head>` block to fully prevent theme flashes on refresh.
 
 ---
 
