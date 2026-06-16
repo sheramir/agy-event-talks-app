@@ -17,6 +17,7 @@ const cacheStatus = document.getElementById('cache-status');
 const feedMeta = document.getElementById('feed-meta');
 const clearFiltersBtn = document.getElementById('clear-filters-btn');
 const exportCsvButton = document.getElementById('export-csv-button');
+const themeToggleButton = document.getElementById('theme-toggle');
 
 // Dialog Elements
 const tweetDialog = document.getElementById('tweet-dialog');
@@ -517,6 +518,14 @@ tweetTextarea.addEventListener('input', updateCharCounter);
 
 // Bind export CSV button
 exportCsvButton.addEventListener('click', exportToCsv);
+
+// Bind theme toggle button
+themeToggleButton.addEventListener('click', () => {
+  document.documentElement.classList.toggle('light-theme');
+  const isLight = document.documentElement.classList.contains('light-theme');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  showToast(`Switched to ${isLight ? 'Light' : 'Dark'} Mode`, 'info');
+});
 
 // Close dialog if clicking backdrop
 tweetDialog.addEventListener('click', (e) => {

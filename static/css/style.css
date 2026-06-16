@@ -20,6 +20,11 @@
   --border-color: rgba(255, 255, 255, 0.06);
   --border-focus: #3b82f6;
 
+  --bg-modal: #151822;
+  --border-modal: rgba(255, 255, 255, 0.1);
+  --bg-toast: #1e293b;
+  --border-toast: rgba(255, 255, 255, 0.08);
+
   /* Accent & Category Colors */
   --primary-accent: #3b82f6;
   --primary-accent-glow: rgba(59, 130, 246, 0.15);
@@ -35,6 +40,38 @@
   --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
   --sidebar-width: 320px;
 }
+
+/* Light Theme overrides */
+.light-theme {
+  --bg-app: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-input: #f8fafc;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  
+  --border-color: rgba(15, 23, 42, 0.08);
+  --border-focus: #2563eb;
+  
+  --primary-accent: #2563eb;
+  --primary-accent-glow: rgba(37, 99, 235, 0.1);
+  
+  --bg-modal: #ffffff;
+  --border-modal: rgba(15, 23, 42, 0.1);
+  --bg-toast: #ffffff;
+  --border-toast: rgba(15, 23, 42, 0.08);
+  --shadow-premium: 0 10px 30px -10px rgba(15, 23, 42, 0.15);
+}
+
+/* Theme Toggle Icon states */
+.theme-icon-sun { display: inline-block; }
+.theme-icon-moon { display: none; }
+
+.light-theme .theme-icon-sun { display: none; }
+.light-theme .theme-icon-moon { display: inline-block; }
 
 /* -----------------------------------------
    Global Styles & Reset
@@ -697,8 +734,8 @@ mark.search-highlight {
    Native Dialog component with animations
    ----------------------------------------- */
 .composer-dialog {
-  background-color: #151822;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--bg-modal);
+  border: 1px solid var(--border-modal);
   border-radius: 16px;
   padding: 0;
   width: 90%;
@@ -913,8 +950,8 @@ mark.search-highlight {
   align-items: center;
   gap: 12px;
   padding: 12px 18px;
-  background-color: #1e293b;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--bg-toast);
+  border: 1px solid var(--border-toast);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   color: var(--text-primary);
