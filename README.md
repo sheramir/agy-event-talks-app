@@ -16,6 +16,8 @@ A premium, responsive dashboard for tracking, searching, filtering, and sharing 
 * **Smart Character Limit Estimation**: Implements t.co URL length correction (matching X's logic where all URLs count as exactly 23 characters) and draws a live circular SVG progress limit ring.
 * **Native Popover Toasts**: Utilizes native `popover="manual"` to stack toast alerts cleanly in the Top Layer without z-index conflicts.
 * **Memory Caching**: Cache feed updates for 5 minutes in memory to prevent rate limits, with a graceful cache fallback if network connection fails.
+* **Copy to Clipboard Utility**: One-click formatted update summaries copied to user clipboards using the browser's `navigator.clipboard` API with dynamic visual button status feedback.
+* **Export to CSV**: Formulates and triggers downloads of the currently filtered release logs as a CSV file, fully formatted with sanitization.
 
 ---
 
