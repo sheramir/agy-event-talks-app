@@ -16,6 +16,7 @@ const filterPills = document.getElementById('filter-pills');
 const cacheStatus = document.getElementById('cache-status');
 const feedMeta = document.getElementById('feed-meta');
 const clearFiltersBtn = document.getElementById('clear-filters-btn');
+const exportCsvButton = document.getElementById('export-csv-button');
 
 // Dialog Elements
 const tweetDialog = document.getElementById('tweet-dialog');
@@ -169,6 +170,12 @@ function renderFeed() {
           </svg>
           <span>Docs</span>
         </a>
+        <button class="btn-card-action copy-action" data-id="${update.id}" title="Copy update to clipboard">
+          <svg class="card-action-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H18C19.1 23 20 22.1 20 21V7C20 5.9 19.1 5 18 5ZM18 21H8V7H18V21Z" fill="currentColor"/>
+          </svg>
+          <span>Copy</span>
+        </button>
         <button class="btn-card-action tweet-action" data-id="${update.id}" title="Select and compose tweet">
           <svg class="card-action-icon" viewBox="0 0 24 24" fill="currentColor">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -189,6 +196,18 @@ function renderFeed() {
       const targetUpdate = allUpdates.find(u => u.id === updateId);
       if (targetUpdate) {
         openTweetComposer(targetUpdate);
+      }
+    });
+  });
+
+  // Attach event listeners to Copy buttons
+  const copyButtons = feedGrid.querySelectorAll('.copy-action');
+  copyButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const updateId = btn.getAttribute('data-id');
+      const targetUpdate = allUpdates.find(u => u.id === updateId);
+      if (targetUpdate) {
+        copyUpdateToClipboard(targetUpdate, btn);
       }
     });
   });
@@ -427,11 +446,77 @@ clearFiltersBtn.addEventListener('click', () => {
   renderFeed();
 });
 
+// Copy specific update contents to user clipboard
+async function copyUpdateToClipboard(update, btnElement) {
+  const textToCopy = `📢 BigQuery Update (${update.date}) [${update.type}]:\n\n${update.text}\n\nRead more details: ${update.link}`;
+  try {
+    await navigator.clipboard.writeText(textToCopy);
+    showToast('Update details copied to clipboard!', 'success');
+    
+    // Visual button state success indicator
+    const label = btnElement.querySelector('span');
+    const originalText = label.textContent;
+    label.textContent = 'Copied!';
+    btnElement.style.borderColor = 'var(--color-feature)';
+    btnElement.style.color = 'var(--color-feature)';
+    
+    setTimeout(() => {
+      label.textContent = originalText;
+      btnElement.style.borderColor = '';
+      btnElement.style.color = '';
+    }, 1500);
+  } catch (err) {
+    console.error('Copy failed:', err);
+    showToast('Failed to copy text. Please try manually.', 'error');
+  }
+}
+
+// Export active filtered list of release notes to CSV file
+function exportToCsv() {
+  if (filteredUpdates.length === 0) {
+    showToast('No release notes available to export.', 'error');
+    return;
+  }
+  
+  // Formulate rows (handling double quotes escaping)
+  const csvHeaders = ['Date', 'Type', 'Description', 'Link'];
+  const csvRows = [
+    csvHeaders.map(header => `"${header}"`).join(','),
+    ...filteredUpdates.map(u => {
+      const escapedDate = u.date.replace(/"/g, '""');
+      const escapedType = u.type.replace(/"/g, '""');
+      const escapedText = u.text.replace(/"/g, '""');
+      const escapedLink = u.link.replace(/"/g, '""');
+      return `"${escapedDate}","${escapedType}","${escapedText}","${escapedLink}"`;
+    })
+  ];
+  
+  const csvContent = csvRows.join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const downloadUrl = URL.createObjectURL(blob);
+  
+  const downloadLink = document.createElement('a');
+  const timestamp = new Date().toISOString().slice(0, 10);
+  
+  downloadLink.setAttribute('href', downloadUrl);
+  downloadLink.setAttribute('download', `bigquery_release_notes_${timestamp}.csv`);
+  downloadLink.style.visibility = 'hidden';
+  
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+  
+  showToast(`Exported ${filteredUpdates.length} release notes successfully!`, 'success');
+}
+
 // Dialog close actions
 dialogCloseBtn.addEventListener('click', closeTweetComposer);
 composerCancelBtn.addEventListener('click', closeTweetComposer);
 composerTweetBtn.addEventListener('click', shareOnTwitter);
 tweetTextarea.addEventListener('input', updateCharCounter);
+
+// Bind export CSV button
+exportCsvButton.addEventListener('click', exportToCsv);
 
 // Close dialog if clicking backdrop
 tweetDialog.addEventListener('click', (e) => {
